@@ -217,7 +217,9 @@ function typifyNull({ thing, nodes, ids, config }: TypifyNullArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `${doExport ? 'export ' : ''}type ${identifier} = ${value};`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }type ${identifier} = ${value};`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -246,7 +248,9 @@ function typifyString({ thing, nodes, ids, config }: TypifyStringArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `${doExport ? 'export ' : ''}type ${identifier} = ${value};`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }type ${identifier} = ${value};`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -272,7 +276,9 @@ function typifyNumber({ thing, nodes, ids, config }: TypifyNumberArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `${doExport ? 'export ' : ''}type ${identifier} = ${value};`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }type ${identifier} = ${value};`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -298,7 +304,9 @@ function typifyBoolean({ thing, nodes, ids, config }: TypifyBooleanArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `${doExport ? 'export ' : ''}type ${identifier} = ${value};`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }type ${identifier} = ${value};`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -333,7 +341,9 @@ function typifyArray({ thing, nodes, ids, config }: TypifyArrayArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `${doExport ? 'export ' : ''}type ${identifier} = ${value};`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }type ${identifier} = ${value};`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -385,7 +395,9 @@ function typifyObject({ thing, nodes, ids, config }: TypifyObjecArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `${doExport ? 'export ' : ''}interface ${identifier} ${value}`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }interface ${identifier} ${value}`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -429,7 +441,10 @@ function typifyThing({
 }
 interface Config {
   maxLiteralPerType?: number;
-  byPath: Record<string, { forceType?: boolean; baseType?: boolean; export?: boolean }>;
+  byPath: Record<
+    string,
+    { forceType?: boolean; baseType?: boolean; export?: boolean }
+  >;
   typePrefix?: string;
 }
 const baseConfig: Config = {
@@ -446,7 +461,10 @@ function typify(
   const identifiers = new Set<string>();
   const config: Config = { ...baseConfig, ...conf, ...forcedConfig } as const;
   config.byPath = { ...conf.byPath, ...forcedConfig.byPath } as const;
-  config.byPath['$'] = {...forcedConfig.byPath['$'], export: conf?.byPath?.['$']?.export} as const
+  config.byPath['$'] = {
+    ...forcedConfig.byPath['$'],
+    export: conf?.byPath?.['$']?.export,
+  } as const;
   typifyThing({
     thing: result,
     nodes,

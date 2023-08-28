@@ -10,12 +10,12 @@ const rimrafP = promisify(rimraf);
 const writeFileP = promisify(writeFile);
 
 const testData: {
-  name: string,
-  in: any,
-  rootName?: string,
-  jsonOut: any,
-  tsOut?: string
-  config?: Parameters<typeof typify>[1]
+  name: string;
+  in: any;
+  rootName?: string;
+  jsonOut: any;
+  tsOut?: string;
+  config?: Parameters<typeof typify>[1];
 }[] = [
   {
     name: 'plain string',
@@ -631,7 +631,7 @@ const testData: {
     tsOut: 'export type Root = "str";',
     config: {
       byPath: {
-        "$": {
+        $: {
           export: true,
         },
       },
@@ -644,7 +644,7 @@ const testData: {
     tsOut: 'export type Root = 5;',
     config: {
       byPath: {
-        "$": {
+        $: {
           export: true,
         },
       },
@@ -657,7 +657,7 @@ const testData: {
     tsOut: 'export type Root = false;',
     config: {
       byPath: {
-        "$": {
+        $: {
           export: true,
         },
       },
@@ -670,7 +670,7 @@ const testData: {
     tsOut: 'export type Root = null;',
     config: {
       byPath: {
-        "$": {
+        $: {
           export: true,
         },
       },
@@ -683,7 +683,7 @@ const testData: {
     tsOut: 'export interface Root {\n  \n}',
     config: {
       byPath: {
-        "$": {
+        $: {
           export: true,
         },
       },
@@ -696,7 +696,7 @@ const testData: {
     tsOut: 'export type Root = never[];',
     config: {
       byPath: {
-        "$": {
+        $: {
           export: true,
         },
       },
