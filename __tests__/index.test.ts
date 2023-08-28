@@ -757,7 +757,7 @@ const tsOptions = {
   removeComments: true,
   jsx: ts.JsxEmit.Preserve,
   noUnusedParameters: true,
-  noUnusedLocals: true,
+  noUnusedLocals: false,
   noImplicitReturns: true,
 };
 
