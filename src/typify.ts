@@ -209,6 +209,7 @@ function addNode(node: Node, nodes: Nodes) {
 function typifyNull({ thing, nodes, ids, config }: TypifyNullArgs) {
   const forceType = (config.byPath[thing.path] || {}).forceType === true;
   const baseType = (config.byPath[thing.path] || {}).baseType === true;
+  const doExport = (config.byPath[thing.path] || {}).export === true;
   const value = baseType ? thing.type : thing.type;
 
   if (!forceType) {
@@ -216,7 +217,9 @@ function typifyNull({ thing, nodes, ids, config }: TypifyNullArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `type ${identifier} = ${value};`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }type ${identifier} = ${value};`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -232,6 +235,7 @@ function typifyNull({ thing, nodes, ids, config }: TypifyNullArgs) {
 function typifyString({ thing, nodes, ids, config }: TypifyStringArgs) {
   const forceType = (config.byPath[thing.path] || {}).forceType === true;
   const baseType = (config.byPath[thing.path] || {}).baseType === true;
+  const doExport = (config.byPath[thing.path] || {}).export === true;
   const value = baseType
     ? thing.type
     : Array.from(thing.values)
@@ -244,7 +248,9 @@ function typifyString({ thing, nodes, ids, config }: TypifyStringArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `type ${identifier} = ${value};`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }type ${identifier} = ${value};`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -260,6 +266,7 @@ function typifyString({ thing, nodes, ids, config }: TypifyStringArgs) {
 function typifyNumber({ thing, nodes, ids, config }: TypifyNumberArgs) {
   const forceType = (config.byPath[thing.path] || {}).forceType === true;
   const baseType = (config.byPath[thing.path] || {}).baseType === true;
+  const doExport = (config.byPath[thing.path] || {}).export === true;
   const value = baseType
     ? thing.type
     : Array.from(thing.values).sort().join(' | ');
@@ -269,7 +276,9 @@ function typifyNumber({ thing, nodes, ids, config }: TypifyNumberArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `type ${identifier} = ${value};`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }type ${identifier} = ${value};`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -285,6 +294,7 @@ function typifyNumber({ thing, nodes, ids, config }: TypifyNumberArgs) {
 function typifyBoolean({ thing, nodes, ids, config }: TypifyBooleanArgs) {
   const forceType = (config.byPath[thing.path] || {}).forceType === true;
   const baseType = (config.byPath[thing.path] || {}).baseType === true;
+  const doExport = (config.byPath[thing.path] || {}).export === true;
   const value = baseType
     ? thing.type
     : Array.from(thing.values).sort().join(' | ');
@@ -294,7 +304,9 @@ function typifyBoolean({ thing, nodes, ids, config }: TypifyBooleanArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `type ${identifier} = ${value};`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }type ${identifier} = ${value};`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -309,6 +321,7 @@ function typifyBoolean({ thing, nodes, ids, config }: TypifyBooleanArgs) {
 
 function typifyArray({ thing, nodes, ids, config }: TypifyArrayArgs) {
   const forceType = (config.byPath[thing.path] || {}).forceType === true;
+  const doExport = (config.byPath[thing.path] || {}).export === true;
   const values = getValuesByType({
     typeValues: thing.values,
     nodes,
@@ -328,7 +341,9 @@ function typifyArray({ thing, nodes, ids, config }: TypifyArrayArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `type ${identifier} = ${value};`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }type ${identifier} = ${value};`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -355,6 +370,7 @@ function formatKeyname(keyname: string) {
 function typifyObject({ thing, nodes, ids, config }: TypifyObjecArgs) {
   const forceType =
     (config.byPath[thing.path] || {}).forceType === false ? false : true;
+  const doExport = (config.byPath[thing.path] || {}).export === true;
   const innerValue = Object.keys(thing.keys)
     .sort()
     .map(keyname => {
@@ -379,7 +395,9 @@ function typifyObject({ thing, nodes, ids, config }: TypifyObjecArgs) {
   }
 
   const identifier = uniqueIdentifier(thing, ids, config.typePrefix);
-  const stringified = `interface ${identifier} ${value}`;
+  const stringified = `${
+    doExport ? 'export ' : ''
+  }interface ${identifier} ${value}`;
   const node: Node = {
     name: thing.name,
     identifier,
@@ -423,7 +441,10 @@ function typifyThing({
 }
 interface Config {
   maxLiteralPerType?: number;
-  byPath: Record<string, { forceType?: boolean; baseType?: boolean }>;
+  byPath: Record<
+    string,
+    { forceType?: boolean; baseType?: boolean; export?: boolean }
+  >;
   typePrefix?: string;
 }
 const baseConfig: Config = {
@@ -440,6 +461,10 @@ function typify(
   const identifiers = new Set<string>();
   const config: Config = { ...baseConfig, ...conf, ...forcedConfig } as const;
   config.byPath = { ...conf.byPath, ...forcedConfig.byPath } as const;
+  config.byPath['$'] = {
+    ...forcedConfig.byPath['$'],
+    export: conf?.byPath?.['$']?.export,
+  } as const;
   typifyThing({
     thing: result,
     nodes,
